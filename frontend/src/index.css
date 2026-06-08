@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* Premium Glassmorphism */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass-card {
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* Interactive gradients */
+  .gradient-brand {
+    background: linear-gradient(135deg, #637eff 0%, #3d52f6 100%);
+  }
+
+  .gradient-glow {
+    box-shadow: 0 0 20px rgba(99, 126, 255, 0.25);
+  }
+
+  /* Micro-animations */
+  .hover-scale {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .hover-scale:hover {
+    transform: scale(1.025);
+  }
+
+  /* Loading skeleton shimmer effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(226, 232, 240, 0.5) 25%,
+      rgba(241, 245, 249, 0.8) 50%,
+      rgba(226, 232, 240, 0.5) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-animation 1.5s infinite;
+  }
+
+  .dark .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(30, 41, 59, 0.5) 25%,
+      rgba(51, 65, 85, 0.8) 50%,
+      rgba(30, 41, 59, 0.5) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-animation 1.5s infinite;
+  }
+}
+
+@keyframes shimmer-animation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Page transitions */
+.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
