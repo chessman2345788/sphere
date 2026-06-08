@@ -4,7 +4,7 @@ import { setAccessToken, clearAuth } from '../redux/slices/authSlice';
 
 // Create custom Axios instance
 const api = axios.create({
-  baseURL: '',
+  baseURL: import.meta.env.VITE_API_URL || '',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,7 +48,7 @@ api.interceptors.response.use(
 
       try {
         // Attempt token rotation call
-        const response = await axios.post('/api/auth/refresh', { refreshToken });
+        const response = await axios.post((import.meta.env.VITE_API_URL || '') + '/api/auth/refresh', { refreshToken });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
 
         // Save fresh tokens to store
