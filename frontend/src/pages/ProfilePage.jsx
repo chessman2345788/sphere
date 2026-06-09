@@ -162,6 +162,10 @@ const ProfilePage = () => {
     );
   }
 
+  if (!profile) {
+    return null;
+  }
+
   const isMe = profile._id === currentUser.id;
 
   return (
