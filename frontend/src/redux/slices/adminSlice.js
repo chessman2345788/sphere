@@ -74,7 +74,7 @@ const adminSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch Users
+      
       .addCase(fetchAdminUsers.pending, (state) => {
         state.isLoading = true;
       })
@@ -88,14 +88,14 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Update User Role
+      
       .addCase(updateRoleAdmin.fulfilled, (state, action) => {
         const user = state.users.find(u => u._id === action.payload.userId);
         if (user) {
           user.role = action.payload.role;
         }
       })
-      // Delete User
+      
       .addCase(deleteUserAdmin.fulfilled, (state, action) => {
         state.users = state.users.filter(u => u._id !== action.payload);
       });

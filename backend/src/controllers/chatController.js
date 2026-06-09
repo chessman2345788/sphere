@@ -4,9 +4,9 @@ const { uploadMedia } = require('../config/cloudinary');
 const { sendRealtimeChat, getIO } = require('../config/socket');
 const mongoose = require('mongoose');
 
-// @desc    Send a direct message
-// @route   POST /api/chat/message
-// @access  Private
+
+
+
 const sendMessage = async (req, res, next) => {
   const { receiverId, content } = req.body;
 
@@ -22,7 +22,7 @@ const sendMessage = async (req, res, next) => {
 
     let mediaData = { url: '', type: '' };
 
-    // Handle media sharing in chat if present
+    
     if (req.file) {
       const resourceType = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
       const folder = 'socialsphere/chats';
@@ -37,7 +37,7 @@ const sendMessage = async (req, res, next) => {
       };
     }
 
-    // Create message
+    
     const message = await Message.create({
       sender: req.user.id,
       receiver: receiverId,
@@ -50,7 +50,7 @@ const sendMessage = async (req, res, next) => {
       .populate('receiver', 'name username avatar')
       .exec();
 
-    // Deliver via Socket.IO using Pub/Sub
+    
     sendRealtimeChat(receiverId, populatedMessage);
 
     res.status(201).json({
@@ -62,14 +62,14 @@ const sendMessage = async (req, res, next) => {
   }
 };
 
-// @desc    Get all unique conversation threads (chats list)
-// @route   GET /api/chat/list
-// @access  Private
+
+
+
 const getChatsList = async (req, res, next) => {
   const userId = new mongoose.Types.ObjectId(req.user.id);
   
   try {
-    // Aggregation pipeline to group chat partners and find their latest message
+    
     const chats = await Message.aggregate([
       {
         $match: {
@@ -119,7 +119,7 @@ const getChatsList = async (req, res, next) => {
       },
     ]);
 
-    // Compute unread count for each thread
+    
     const chatsWithUnread = await Promise.all(
       chats.map(async (chat) => {
         const unreadCount = await Message.countDocuments({
@@ -140,9 +140,9 @@ const getChatsList = async (req, res, next) => {
   }
 };
 
-// @desc    Get message history between current user and target user
-// @route   GET /api/chat/history/:userId
-// @access  Private
+
+
+
 const getMessageHistory = async (req, res, next) => {
   const currentUserId = req.user.id;
   const partnerUserId = req.params.userId;
@@ -158,7 +158,7 @@ const getMessageHistory = async (req, res, next) => {
         { sender: partnerUserId, receiver: currentUserId },
       ],
     })
-      .sort({ createdAt: -1 }) // Get newest first (easy for scrolling up)
+      .sort({ createdAt: -1 }) 
       .skip(skip)
       .limit(limit)
       .populate('sender', 'name username avatar')
@@ -174,7 +174,7 @@ const getMessageHistory = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      messages: messages.reverse(), // Reverse to chronological order for chat UI
+      messages: messages.reverse(), 
       page,
       totalPages: Math.ceil(total / limit),
     });
@@ -183,21 +183,21 @@ const getMessageHistory = async (req, res, next) => {
   }
 };
 
-// @desc    Mark all messages in thread as read
-// @route   POST /api/chat/read/:userId
-// @access  Private
+
+
+
 const markAsRead = async (req, res, next) => {
   const currentUserId = req.user.id;
   const senderId = req.params.userId;
 
   try {
-    // Update DB
+    
     await Message.updateMany(
       { sender: senderId, receiver: currentUserId, isRead: false },
       { $set: { isRead: true, readAt: new Date() } }
     );
 
-    // Notify the sender that messages have been read
+    
     const io = getIO();
     io.to(senderId).emit('messages_read', { readerId: currentUserId });
 

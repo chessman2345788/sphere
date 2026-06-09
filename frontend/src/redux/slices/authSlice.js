@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Get theme and credentials from local storage if they exist
+
 const initialTheme = localStorage.getItem('theme') || 'dark';
 if (initialTheme === 'dark') {
   document.documentElement.classList.add('dark');
@@ -23,7 +23,7 @@ const initialState = {
   error: null,
 };
 
-// Async Thunks
+
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
@@ -127,7 +127,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register
+      
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -146,7 +146,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Login
+      
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -165,7 +165,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Logout
+      
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.accessToken = null;
@@ -175,12 +175,12 @@ const authSlice = createSlice({
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
       })
-      // Fetch Current User
+      
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
-      // Update profile
+      
       .addCase(updateUserProfile.pending, (state) => {
         state.isLoading = true;
       })

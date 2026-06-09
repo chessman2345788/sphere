@@ -5,8 +5,8 @@ const initialState = {
   chats: [],
   activeChatPartner: null,
   messages: [],
-  onlineUsers: [], // Array of User IDs
-  typingUsers: [], // Array of User IDs currently typing
+  onlineUsers: [], 
+  typingUsers: [], 
   isLoading: false,
   error: null,
 };
@@ -81,34 +81,34 @@ const chatSlice = createSlice({
   reducers: {
     setActiveChatPartner: (state, action) => {
       state.activeChatPartner = action.payload;
-      state.messages = []; // Clear current thread messages before loading history
+      state.messages = []; 
     },
     receiveNewMessage: (state, action) => {
       const msg = action.payload;
       const currentUserId = msg.receiver._id || msg.receiver;
       const senderId = msg.sender._id || msg.sender;
       
-      // Determine conversation partner ID
+      
       const partnerId = senderId === state.activeChatPartner?._id ? senderId : currentUserId;
       
-      // 1. If message belongs to active chat, add to messages list
+      
       if (state.activeChatPartner && 
           (senderId === state.activeChatPartner._id || receiverIdMatches(msg, state.activeChatPartner._id))) {
         state.messages.push(msg);
       }
 
-      // Helper function to check receiver ID
+      
       function receiverIdMatches(message, activeId) {
         const rId = message.receiver?._id || message.receiver;
         return rId === activeId;
       }
 
-      // 2. Update conversation thread summary list
+      
       const otherUserId = senderId === currentUserId ? (msg.receiver._id || msg.receiver) : senderId;
       const chatIndex = state.chats.findIndex(c => c.partner._id === otherUserId);
 
       if (chatIndex !== -1) {
-        // Move chat to top and update last message
+        
         const updatedChat = {
           ...state.chats[chatIndex],
           lastMessage: msg,
@@ -117,7 +117,7 @@ const chatSlice = createSlice({
         state.chats.splice(chatIndex, 1);
         state.chats.unshift(updatedChat);
       } else {
-        // Fetch chats list again or push a temporary summary
+        
         state.chats.unshift({
           partner: senderId === currentUserId ? msg.receiver : msg.sender,
           lastMessage: msg,
@@ -126,7 +126,7 @@ const chatSlice = createSlice({
       }
     },
     updateOnlineUsers: (state, action) => {
-      // payload: { userId, status }
+      
       const { userId, status } = action.payload;
       if (status === 'online') {
         if (!state.onlineUsers.includes(userId)) {
@@ -140,7 +140,7 @@ const chatSlice = createSlice({
       state.onlineUsers = action.payload;
     },
     setPartnerTyping: (state, action) => {
-      // payload: { userId, isTyping }
+      
       const { userId, isTyping } = action.payload;
       if (isTyping) {
         if (!state.typingUsers.includes(userId)) state.typingUsers.push(userId);
@@ -149,7 +149,7 @@ const chatSlice = createSlice({
       }
     },
     setMessagesReadLocal: (state, action) => {
-      // payload: { readerId }
+      
       if (state.activeChatPartner && state.activeChatPartner._id === action.payload.readerId) {
         state.messages = state.messages.map(m => ({ ...m, isRead: true }));
       }
@@ -157,7 +157,7 @@ const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Chats list
+      
       .addCase(fetchChatsList.pending, (state) => {
         state.isLoading = true;
       })
@@ -169,7 +169,7 @@ const chatSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Message History
+      
       .addCase(fetchMessageHistory.pending, (state) => {
         state.isLoading = true;
       })
@@ -182,12 +182,12 @@ const chatSlice = createSlice({
           state.messages = [...messages, ...state.messages];
         }
       })
-      // Send message
+      
       .addCase(sendDirectMessage.fulfilled, (state, action) => {
         const msg = action.payload;
         state.messages.push(msg);
         
-        // Update chats list item
+        
         const partnerId = msg.receiver._id || msg.receiver;
         const chatIndex = state.chats.findIndex(c => c.partner._id === partnerId);
         
@@ -197,7 +197,7 @@ const chatSlice = createSlice({
           state.chats.unshift(updatedChat);
         }
       })
-      // Mark chat read
+      
       .addCase(markChatAsRead.fulfilled, (state, action) => {
         const partnerId = action.payload;
         const chatIndex = state.chats.findIndex(c => c.partner._id === partnerId);

@@ -32,9 +32,9 @@ const LoginPage = () => {
     <div className="min-h-screen w-screen flex items-center justify-center bg-slate-50 dark:bg-dark-950 p-4 transition-colors">
       <div className="w-full max-w-5xl md:h-[600px] h-auto grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl glass-card">
         
-        {/* Left branding banner */}
+        
         <div className="hidden md:flex flex-col justify-between p-12 gradient-brand relative overflow-hidden">
-          {/* Animated decorative shapes */}
+          
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
           
@@ -59,7 +59,7 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Right Form panel */}
+        
         <div className="flex flex-col justify-center p-8 md:p-12 bg-white dark:bg-dark-800 transition-colors">
           <div className="mb-8 text-center md:text-left">
             <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white mb-2">Welcome Back</h2>

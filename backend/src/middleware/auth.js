@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Protect routes - Verify JWT access token
+
 const protect = async (req, res, next) => {
   let token;
 
@@ -14,10 +14,10 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    // Verify token
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretjwtkey123!');
 
-    // Fetch user and attach to request
+    
     req.user = await User.findById(decoded.id).select('-password');
     if (!req.user) {
       return res.status(401).json({ success: false, message: 'User not found' });
@@ -33,7 +33,7 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Limit access to admin role only
+
 const admin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     next();

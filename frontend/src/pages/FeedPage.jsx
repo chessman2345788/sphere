@@ -18,14 +18,14 @@ const FeedPage = () => {
 
   const fileInputRef = useRef(null);
 
-  // Fetch initial feed and trending posts
+  
   useEffect(() => {
     dispatch(resetFeedState());
     dispatch(fetchFeed(1));
     dispatch(fetchTrendingPosts());
   }, [dispatch]);
 
-  // Handle file selections
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     processFile(file);
@@ -34,7 +34,7 @@ const FeedPage = () => {
   const processFile = (file) => {
     if (!file) return;
 
-    // Validate size (max 20MB)
+    
     if (file.size > 20 * 1024 * 1024) {
       return toast.error('File exceeds the 20MB size limit');
     }
@@ -43,7 +43,7 @@ const FeedPage = () => {
     setFileType(type);
     setSelectedFile(file);
 
-    // Create preview URL
+    
     const reader = new FileReader();
     reader.onloadend = () => {
       setFilePreview(reader.result);
@@ -51,7 +51,7 @@ const FeedPage = () => {
     reader.readAsDataURL(file);
   };
 
-  // Drag & drop handlers
+  
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -112,10 +112,10 @@ const FeedPage = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      {/* Main Social Feed */}
+      
       <div className="lg:col-span-2 space-y-6">
         
-        {/* Post Creation Box */}
+        
         <div 
           onDragEnter={handleDrag}
           onDragOver={handleDrag}
@@ -138,7 +138,7 @@ const FeedPage = () => {
               />
             </div>
 
-            {/* Media Upload Preview Panel */}
+            
             {filePreview && (
               <div className="relative mt-4 rounded-xl overflow-hidden max-h-60 border border-slate-100 dark:border-dark-700 bg-slate-50 dark:bg-dark-900">
                 <button
@@ -156,7 +156,7 @@ const FeedPage = () => {
               </div>
             )}
 
-            {/* Creation Toolbar controls */}
+            
             <div className="flex items-center justify-between border-t border-slate-50 dark:border-dark-700/50 pt-4 mt-4">
               <div className="flex items-center gap-2">
                 <input
@@ -187,7 +187,7 @@ const FeedPage = () => {
           </form>
         </div>
 
-        {/* Feed Posts List */}
+        
         <div className="space-y-4">
           {posts.length === 0 && !isLoading ? (
             <div className="text-center py-12 bg-white dark:bg-dark-800 rounded-2xl border border-slate-100 dark:border-dark-700 p-6">
@@ -201,7 +201,7 @@ const FeedPage = () => {
             posts.map((post) => <PostCard key={post._id} post={post} />)
           )}
 
-          {/* Loading Skeletons */}
+          
           {isLoading && (
             <div className="space-y-4">
               {[1, 2].map((n) => (
@@ -219,7 +219,7 @@ const FeedPage = () => {
             </div>
           )}
 
-          {/* Infinite Scroll trigger button */}
+          
           {hasMore && !isLoading && (
             <button
               onClick={loadMorePosts}
@@ -231,10 +231,10 @@ const FeedPage = () => {
         </div>
       </div>
 
-      {/* Sidebar widgets panel */}
+      
       <div className="space-y-6">
         
-        {/* Redis Trending Posts widget */}
+        
         <div className="bg-white dark:bg-dark-800 rounded-2xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="h-4.5 w-4.5 text-brand-500" />

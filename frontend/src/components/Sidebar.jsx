@@ -32,7 +32,7 @@ const Sidebar = () => {
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-dark-800 border-r border-slate-100 dark:border-dark-700 h-full p-6 transition-colors duration-200">
-      {/* Brand Logo */}
+      
       <div className="flex items-center gap-3 mb-10">
         <div className="p-2 gradient-brand rounded-xl shadow-lg gradient-glow">
           <Sparkles className="h-6 w-6 text-white animate-pulse" />
@@ -42,7 +42,7 @@ const Sidebar = () => {
         </span>
       </div>
 
-      {/* Navigation Links */}
+      
       <nav className="flex-1 space-y-1.5">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -72,9 +72,9 @@ const Sidebar = () => {
         })}
       </nav>
 
-      {/* Footer controls */}
+      
       <div className="mt-auto border-t border-slate-100 dark:border-dark-700 pt-6 space-y-2">
-        {/* Theme toggle */}
+        
         <button
           onClick={() => dispatch(toggleTheme())}
           className="flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-700 transition-colors"
@@ -92,7 +92,7 @@ const Sidebar = () => {
           )}
         </button>
 
-        {/* Logout */}
+        
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors group"

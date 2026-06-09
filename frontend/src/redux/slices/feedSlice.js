@@ -11,7 +11,7 @@ const initialState = {
   error: null,
 };
 
-// Helper for Authorization Headers
+
 const getAuthConfig = (getState) => {
   const { auth } = getState();
   return {
@@ -137,7 +137,7 @@ const feedSlice = createSlice({
       if (post) post.commentsCount += 1;
     },
     decrementCommentCount: (state, action) => {
-      // payload: { postId, count }
+      
       const post = state.posts.find((p) => p._id === action.payload.postId);
       if (post) post.commentsCount = Math.max(0, post.commentsCount - action.payload.count);
     },
@@ -149,7 +149,7 @@ const feedSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Feed
+      
       .addCase(fetchFeed.pending, (state) => {
         state.isLoading = true;
       })
@@ -159,7 +159,7 @@ const feedSlice = createSlice({
         if (page === 1) {
           state.posts = posts;
         } else {
-          // Prevent duplicates
+          
           const existingIds = new Set(state.posts.map(p => p._id));
           const uniquePosts = posts.filter(p => !existingIds.has(p._id));
           state.posts = [...state.posts, ...uniquePosts];
@@ -171,11 +171,11 @@ const feedSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Create Post
+      
       .addCase(createPost.fulfilled, (state, action) => {
         state.posts.unshift(action.payload);
       })
-      // Like Post
+      
       .addCase(likePost.fulfilled, (state, action) => {
         const post = state.posts.find(p => p._id === action.payload.postId);
         if (post) {
@@ -186,19 +186,19 @@ const feedSlice = createSlice({
           trendingPost.likes = action.payload.likes;
         }
       })
-      // Repost
+      
       .addCase(repostPost.fulfilled, (state, action) => {
         state.posts.unshift(action.payload);
       })
-      // Fetch Bookmarks
+      
       .addCase(fetchBookmarks.fulfilled, (state, action) => {
         state.bookmarks = action.payload;
       })
-      // Fetch Trending
+      
       .addCase(fetchTrendingPosts.fulfilled, (state, action) => {
         state.trendingPosts = action.payload;
       })
-      // Delete Post
+      
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter(p => p._id !== action.payload);
         state.trendingPosts = state.trendingPosts.filter(p => p._id !== action.payload);

@@ -48,7 +48,7 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-// Extract hashtags before saving
+
 postSchema.pre('save', function (next) {
   if (this.content) {
     const hashtags = this.content.match(/#\w+/g);

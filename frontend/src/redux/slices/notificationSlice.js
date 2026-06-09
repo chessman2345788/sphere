@@ -72,7 +72,7 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     receiveNotification: (state, action) => {
-      // Avoid duplicate notifications in array
+      
       const exists = state.notifications.some(n => n._id === action.payload._id);
       if (!exists) {
         state.notifications.unshift(action.payload);
@@ -86,7 +86,7 @@ const notificationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Notifications
+      
       .addCase(fetchNotifications.pending, (state) => {
         state.isLoading = true;
       })
@@ -98,16 +98,16 @@ const notificationSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Fetch unread count
+      
       .addCase(fetchUnreadCount.fulfilled, (state, action) => {
         state.unreadCount = action.payload;
       })
-      // Read all
+      
       .addCase(readAllNotifications.fulfilled, (state) => {
         state.notifications = state.notifications.map(n => ({ ...n, isRead: true }));
         state.unreadCount = 0;
       })
-      // Read single
+      
       .addCase(readSingleNotification.fulfilled, (state, action) => {
         const index = state.notifications.findIndex(n => n._id === action.payload._id);
         if (index !== -1) {

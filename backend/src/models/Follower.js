@@ -18,7 +18,7 @@ const followerSchema = new mongoose.Schema(
   }
 );
 
-// Create compound index for faster lookup and uniqueness
+
 followerSchema.index({ follower: 1, following: 1 }, { unique: true });
 followerSchema.index({ following: 1 });
 

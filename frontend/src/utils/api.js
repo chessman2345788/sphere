@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../redux/store';
 import { setAccessToken, clearAuth } from '../redux/slices/authSlice';
 
-// Create custom Axios instance
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
   headers: {
@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-// Request Interceptor: Attach Access Token
+
 api.interceptors.request.use(
   (config) => {
     const state = store.getState();
@@ -25,13 +25,13 @@ api.interceptors.request.use(
   }
 );
 
-// Response Interceptor: Handle Token Refresh Rotation on 401
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check if error is 401, check if retry hasn't happened yet, and if refresh token is available
+    
     if (
       error.response?.status === 401 && 
       !originalRequest._retry && 
@@ -47,14 +47,14 @@ api.interceptors.response.use(
       }
 
       try {
-        // Attempt token rotation call
+        
         const response = await axios.post((import.meta.env.VITE_API_URL || '') + '/api/auth/refresh', { refreshToken });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-        // Save fresh tokens to store
+        
         store.dispatch(setAccessToken({ accessToken, refreshToken: newRefreshToken }));
 
-        // Retry original request with new token
+        
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {

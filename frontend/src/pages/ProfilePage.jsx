@@ -19,7 +19,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Edit fields state
+  
   const [editName, setEditName] = useState('');
   const [editBio, setEditBio] = useState('');
   const [editLocation, setEditLocation] = useState('');
@@ -28,7 +28,7 @@ const ProfilePage = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
 
-  // Followers Modal state
+  
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [modalUsersList, setModalUsersList] = useState([]);
@@ -37,22 +37,22 @@ const ProfilePage = () => {
   const fetchProfileData = async () => {
     setIsLoading(true);
     try {
-      // 1. Fetch Profile Info
+      
       const profileRes = await api.get(`/api/users/profile/${username}`);
       setProfile(profileRes.data.profile);
 
-      // Initialize edit fields
+      
       setEditName(profileRes.data.profile.name || '');
       setEditBio(profileRes.data.profile.bio || '');
       setEditLocation(profileRes.data.profile.location || '');
       setEditSkills(profileRes.data.profile.skills?.join(', ') || '');
       setEditInterests(profileRes.data.profile.interests?.join(', ') || '');
 
-      // 2. Fetch User's Posts
+      
       const postsRes = await api.get(`/api/posts/user/${username}`);
       setProfilePosts(postsRes.data.posts);
 
-      // 3. Fetch Analytics (only if it's the current user)
+      
       if (profileRes.data.profile._id === currentUser.id) {
         const analyticsRes = await api.get('/api/users/profile-analytics');
         setAnalytics(analyticsRes.data.analytics);
@@ -102,7 +102,7 @@ const ProfilePage = () => {
     formData.append('bio', editBio);
     formData.append('location', editLocation);
     
-    // Parse arrays
+    
     const skillsArr = editSkills.split(',').map((s) => s.trim()).filter(Boolean);
     const interestsArr = editInterests.split(',').map((i) => i.trim()).filter(Boolean);
     formData.append('skills', JSON.stringify(skillsArr));
@@ -116,7 +116,7 @@ const ProfilePage = () => {
       if (updateUserProfile.fulfilled.match(resultAction)) {
         toast.success('Profile updated successfully');
         setIsEditing(false);
-        fetchProfileData(); // Reload profile details
+        fetchProfileData(); 
       } else {
         toast.error(resultAction.payload || 'Failed to update profile');
       }
@@ -171,10 +171,10 @@ const ProfilePage = () => {
   return (
     <div className="space-y-6">
       
-      {/* Profile Header Card */}
+      
       <div className="bg-white dark:bg-dark-800 rounded-3xl overflow-hidden border border-slate-100 dark:border-dark-700 shadow-sm relative transition-colors">
         
-        {/* Cover Photo */}
+        
         <div className="h-48 bg-slate-100 dark:bg-dark-900 relative">
           {profile.coverImage ? (
             <img src={profile.coverImage} alt="Cover" className="w-full h-full object-cover" />
@@ -183,9 +183,9 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Profile Details Container */}
+        
         <div className="px-6 pb-6 relative">
-          {/* Avatar Picture */}
+          
           <div className="absolute -top-16 left-6 h-28 w-28 rounded-2xl border-4 border-white dark:border-dark-800 overflow-hidden bg-slate-100 shadow-lg">
             <img src={profile.avatar} alt="Avatar" className="w-full h-full object-cover" />
           </div>
@@ -201,7 +201,7 @@ const ProfilePage = () => {
               <p className="text-xs text-slate-400">@{profile.username}</p>
             </div>
 
-            {/* Profile Action Buttons */}
+            
             <div className="flex gap-2.5">
               {isMe ? (
                 <button
@@ -226,7 +226,7 @@ const ProfilePage = () => {
 
                   <button
                     onClick={() => {
-                      // Navigate to direct messaging
+                      
                       navigate('/chat');
                     }}
                     className="px-4 py-2 border border-slate-200 dark:border-dark-600 text-slate-600 dark:text-slate-350 text-xs font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-dark-700 transition-colors"
@@ -238,14 +238,14 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Bio text */}
+          
           {profile.bio && (
             <p className="text-sm text-slate-600 dark:text-slate-350 max-w-2xl mb-4 leading-relaxed whitespace-pre-line">
               {profile.bio}
             </p>
           )}
 
-          {/* Location / Meta row */}
+          
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
             {profile.location && (
               <div className="flex items-center gap-1.5">
@@ -271,13 +271,13 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Grid: Left Skills/Interests - Right Posts Feed */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left Column: Skills / Interests / Analytics */}
+        
         <div className="space-y-6">
           
-          {/* Personal Analytics Widgets (Me only) */}
+          
           {isMe && analytics && (
             <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm space-y-4">
               <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-wider mb-2">
@@ -305,7 +305,7 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Skills tags */}
+          
           {profile.skills?.length > 0 && (
             <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
@@ -327,7 +327,7 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Interests tags */}
+          
           {profile.interests?.length > 0 && (
             <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
@@ -350,7 +350,7 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Right Column: User Posts list */}
+        
         <div className="lg:col-span-2 space-y-4">
           <h2 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-wider mb-2">
             Creator Feed ({profilePosts.length})
@@ -366,7 +366,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Edit Profile Modal Dialog */}
+      
       {isEditing && (
         <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 z-50 flex items-center justify-center p-4 transition-all">
           <div className="w-full max-w-lg bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -467,7 +467,7 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {/* Followers Modal dialog */}
+      
       {(showFollowersModal || showFollowingModal) && (
         <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 z-50 flex items-center justify-center p-4 transition-all">
           <div className="w-full max-w-sm bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 relative max-h-[80vh] overflow-hidden flex flex-col shadow-2xl">

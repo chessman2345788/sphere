@@ -11,7 +11,7 @@ const AdminPage = () => {
   
   const dispatch = useDispatch();
 
-  const [activeTab, setActiveTab] = useState('users'); // 'users' or 'content'
+  const [activeTab, setActiveTab] = useState('users'); 
   const [moderationPosts, setModerationPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [stats, setStats] = useState(null);
@@ -39,7 +39,7 @@ const AdminPage = () => {
   const fetchRecentPosts = async () => {
     setPostsLoading(true);
     try {
-      // Get trending or recent posts using post feed (since admins are authorized, we'll fetch general feed/search)
+      
       const res = await api.get('/api/posts/feed?page=1&limit=30');
       setModerationPosts(res.data.posts);
     } catch (err) {
@@ -60,7 +60,7 @@ const AdminPage = () => {
         .unwrap()
         .then(() => {
           toast.success(`Updated role to ${targetRole}`);
-          dispatch(fetchAdminUsers(page)); // Reload
+          dispatch(fetchAdminUsers(page)); 
         })
         .catch((err) => toast.error(err || 'Failed to update role'));
     }
@@ -76,8 +76,8 @@ const AdminPage = () => {
         .unwrap()
         .then(() => {
           toast.success('User profile purged successfully');
-          dispatch(fetchAdminUsers(page)); // Reload
-          fetchSystemStats(); // Update totals
+          dispatch(fetchAdminUsers(page)); 
+          fetchSystemStats(); 
         })
         .catch((err) => toast.error(err || 'Failed to purge user'));
     }
@@ -90,7 +90,7 @@ const AdminPage = () => {
         .then(() => {
           toast.success('Post removed by administrator');
           setModerationPosts(moderationPosts.filter(p => p._id !== postId));
-          fetchSystemStats(); // Update totals
+          fetchSystemStats(); 
         })
         .catch((err) => toast.error(err || 'Failed to delete post'));
     }
@@ -105,7 +105,7 @@ const AdminPage = () => {
   return (
     <div className="space-y-6">
       
-      {/* Platform Summary widgets */}
+      
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm flex items-center gap-4 transition-colors">
@@ -140,7 +140,7 @@ const AdminPage = () => {
         </div>
       )}
 
-      {/* Tabs */}
+      
       <div className="border-b border-slate-100 dark:border-dark-700 flex gap-4 text-xs font-bold uppercase tracking-wider pb-1">
         <button
           onClick={() => setActiveTab('users')}
@@ -164,7 +164,7 @@ const AdminPage = () => {
         </button>
       </div>
 
-      {/* Tab Panel: Users Management */}
+      
       {activeTab === 'users' && (
         <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm transition-colors">
           <div className="overflow-x-auto">
@@ -244,7 +244,7 @@ const AdminPage = () => {
             </table>
           </div>
 
-          {/* Pagination */}
+          
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-5 pt-4 border-t border-slate-50 dark:border-dark-700/50">
               <button
@@ -267,7 +267,7 @@ const AdminPage = () => {
         </div>
       )}
 
-      {/* Tab Panel: Content Moderation */}
+      
       {activeTab === 'content' && (
         <div className="space-y-4">
           {postsLoading ? (

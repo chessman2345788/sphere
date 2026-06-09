@@ -21,7 +21,7 @@ const Navbar = () => {
   const profileRef = useRef(null);
   const searchRef = useRef(null);
 
-  // Close menus when clicking outside
+  
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -38,14 +38,14 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
-  // Fetch notifications on mount
+  
   useEffect(() => {
     if (user) {
       dispatch(fetchNotifications());
     }
   }, [user, dispatch]);
 
-  // Handle Search input
+  
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.trim().length >= 2) {
@@ -70,7 +70,7 @@ const Navbar = () => {
     if (notif.type === 'follow') {
       navigate(`/profile/${notif.sender.username}`);
     } else if (notif.post) {
-      navigate(`/`); // Navigate to feed to view it or details page
+      navigate(`/`); 
     }
   };
 
@@ -92,7 +92,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-dark-800/80 backdrop-blur-md border-b border-slate-100 dark:border-dark-700 h-16 flex items-center justify-between px-6 transition-colors duration-200">
       
-      {/* Mobile Menu Trigger & Logo */}
+      
       <div className="flex items-center gap-3 md:hidden">
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -105,7 +105,7 @@ const Navbar = () => {
         </span>
       </div>
 
-      {/* Search Bar */}
+      
       <div className="relative flex-1 max-w-md hidden sm:block" ref={searchRef}>
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className="h-4 w-4 text-slate-400" />
@@ -118,7 +118,7 @@ const Navbar = () => {
           className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100/80 dark:bg-dark-900 border border-transparent rounded-xl focus:bg-white dark:focus:bg-dark-950 focus:border-brand-500 outline-none transition-all dark:text-slate-200"
         />
         
-        {/* Search Results Dropdown */}
+        
         {searchResults.length > 0 && (
           <div className="absolute top-12 left-0 w-full bg-white dark:bg-dark-800 rounded-xl shadow-xl border border-slate-100 dark:border-dark-700 overflow-hidden divide-y divide-slate-50 dark:divide-dark-700">
             {searchResults.map((u) => (
@@ -142,9 +142,9 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Right Navbar Controls */}
+      
       <div className="flex items-center gap-4 ml-auto">
-        {/* Notification Bell */}
+        
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
@@ -158,7 +158,7 @@ const Navbar = () => {
             )}
           </button>
 
-          {/* Notifications Dropdown */}
+          
           {showNotifications && (
             <div className="absolute top-12 right-0 w-80 bg-white/95 dark:bg-dark-800/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-100 dark:border-dark-700 overflow-hidden py-2 divide-y divide-slate-100 dark:divide-dark-700">
               <div className="flex items-center justify-between px-4 py-2 pb-3">
@@ -224,7 +224,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Profile Dropdown */}
+        
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -267,21 +267,21 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu (Slide out or panel overlay) */}
+      
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-slate-900/40 dark:bg-black/60 z-50 transition-opacity" onClick={() => setMobileMenuOpen(false)}>
           <div 
             className="w-64 max-w-xs bg-white dark:bg-dark-800 h-full p-6 flex flex-col shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Logo */}
+            
             <div className="flex items-center gap-3 mb-10">
               <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-500 to-indigo-600 dark:from-brand-400 dark:to-indigo-500 bg-clip-text text-transparent">
                 SocialSphere
               </span>
             </div>
             
-            {/* Links */}
+            
             <nav className="flex-grow space-y-4">
               <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium dark:text-slate-200">Feed</Link>
               <Link to="/chat" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium dark:text-slate-200">Messages</Link>

@@ -5,9 +5,9 @@ const Follower = require('../models/Follower');
 const Notification = require('../models/Notification');
 const Message = require('../models/Message');
 
-// @desc    Get all users list
-// @route   GET /api/admin/users
-// @access  Private/Admin
+
+
+
 const getAllUsers = async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
@@ -22,7 +22,7 @@ const getAllUsers = async (req, res, next) => {
 
     const total = await User.countDocuments();
 
-    // Map through users and append post and follower counts
+    
     const usersWithStats = await Promise.all(
       users.map(async (u) => {
         const postsCount = await Post.countDocuments({ author: u._id });
@@ -47,9 +47,9 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-// @desc    Change user role (User / Admin)
-// @route   PUT /api/admin/users/:id/role
-// @access  Private/Admin
+
+
+
 const updateUserRole = async (req, res, next) => {
   const { role } = req.body;
 
@@ -63,7 +63,7 @@ const updateUserRole = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Don't let admins demote themselves
+    
     if (user._id.toString() === req.user.id && role === 'user') {
       return res.status(400).json({ success: false, message: 'You cannot demote yourself from admin role' });
     }
@@ -85,9 +85,9 @@ const updateUserRole = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a user and all their associated contents (Purge user)
-// @route   DELETE /api/admin/users/:id
-// @access  Private/Admin
+
+
+
 const deleteUser = async (req, res, next) => {
   const userId = req.params.id;
 
@@ -101,22 +101,22 @@ const deleteUser = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // 1. Delete user posts & media
+    
     await Post.deleteMany({ author: userId });
 
-    // 2. Delete comments
+    
     await Comment.deleteMany({ author: userId });
 
-    // 3. Delete follower relations
+    
     await Follower.deleteMany({ $or: [{ follower: userId }, { following: userId }] });
 
-    // 4. Delete notifications
+    
     await Notification.deleteMany({ $or: [{ recipient: userId }, { sender: userId }] });
 
-    // 5. Delete messages
+    
     await Message.deleteMany({ $or: [{ sender: userId }, { receiver: userId }] });
 
-    // 6. Delete user account
+    
     await User.findByIdAndDelete(userId);
 
     res.status(200).json({ success: true, message: 'User account and all associated contents purged successfully' });
@@ -125,9 +125,9 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-// @desc    Delete post (Moderation override)
-// @route   DELETE /api/admin/posts/:id
-// @access  Private/Admin
+
+
+
 const deletePostModeration = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -136,13 +136,13 @@ const deletePostModeration = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    // Delete post
+    
     await Post.findByIdAndDelete(req.params.id);
 
-    // Delete comments
+    
     await Comment.deleteMany({ post: req.params.id });
 
-    // Delete notifications
+    
     await Notification.deleteMany({ post: req.params.id });
 
     res.status(200).json({ success: true, message: 'Post removed by administrator' });

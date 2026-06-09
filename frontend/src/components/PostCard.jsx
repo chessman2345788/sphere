@@ -25,9 +25,9 @@ const PostCard = ({ post }) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null); // comment object
+  const [replyingTo, setReplyingTo] = useState(null); 
   const [replyText, setReplyText] = useState('');
-  const [replies, setReplies] = useState({}); // commentId -> replies array
+  const [replies, setReplies] = useState({}); 
   const [isSharing, setIsSharing] = useState(false);
   const [shareText, setShareText] = useState('');
 
@@ -106,7 +106,7 @@ const PostCard = ({ post }) => {
       setComments([res.data.comment, ...comments]);
       setNewCommentText('');
       toast.success('Comment added');
-      // Update local comment count representation (UI trigger)
+      
       post.commentsCount = (post.commentsCount || 0) + 1;
     } catch (err) {
       toast.error('Failed to add comment');
@@ -213,7 +213,7 @@ const PostCard = ({ post }) => {
   return (
     <article className="bg-white dark:bg-dark-800 rounded-2xl border border-slate-100 dark:border-dark-700 shadow-sm p-5 transition-all mb-4 fade-in">
       
-      {/* Post Header */}
+      
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <Link to={`/profile/${post.author?.username}`}>
@@ -241,7 +241,7 @@ const PostCard = ({ post }) => {
           </div>
         </div>
 
-        {/* Action Options */}
+        
         {(isAuthor || user?.role === 'admin') && (
           <button
             onClick={handleDelete}
@@ -252,7 +252,7 @@ const PostCard = ({ post }) => {
         )}
       </div>
 
-      {/* Repost Metadata */}
+      
       {post.originalPost && (
         <div className="border border-dashed border-slate-200 dark:border-dark-600 rounded-xl p-3 mb-4 bg-slate-50/50 dark:bg-dark-900/40">
           <div className="flex items-center gap-2 mb-2">
@@ -283,13 +283,13 @@ const PostCard = ({ post }) => {
         </div>
       )}
 
-      {/* Post Content */}
+      
       <div className="mb-4">
         <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
           {formatContent(post.content)}
         </p>
 
-        {/* Media Attachments */}
+        
         {post.media?.url && (
           <div className="mt-4 rounded-2xl overflow-hidden max-h-96 border border-slate-100 dark:border-dark-700">
             {post.media.type === 'video' ? (
@@ -301,7 +301,7 @@ const PostCard = ({ post }) => {
         )}
       </div>
 
-      {/* Post Actions Row */}
+      
       <div className="flex items-center justify-between border-t border-b border-slate-50 dark:border-dark-700/50 py-3 mb-4 text-slate-500 dark:text-slate-400">
         <button
           onClick={handleLike}
@@ -339,7 +339,7 @@ const PostCard = ({ post }) => {
         </button>
       </div>
 
-      {/* Repost Form panel */}
+      
       {isSharing && (
         <form onSubmit={handleRepost} className="mb-4 flex gap-2">
           <input
@@ -358,10 +358,10 @@ const PostCard = ({ post }) => {
         </form>
       )}
 
-      {/* Comments section */}
+      
       {showComments && (
         <div className="space-y-4">
-          {/* New Comment box */}
+          
           <form onSubmit={handleAddComment} className="flex gap-2">
             <input
               type="text"
@@ -378,7 +378,7 @@ const PostCard = ({ post }) => {
             </button>
           </form>
 
-          {/* Comments List */}
+          
           <div className="space-y-4 max-h-80 overflow-y-auto pr-1">
             {comments.length === 0 ? (
               <div className="text-center py-4 text-xs text-slate-400">No comments yet.</div>
@@ -413,7 +413,7 @@ const PostCard = ({ post }) => {
                     </div>
                   </div>
 
-                  {/* Comment Actions: Reply / Delete */}
+                  
                   <div className="flex items-center gap-3 mt-1.5 ml-9 text-[10px] text-slate-400">
                     <button onClick={() => setReplyingTo(comment)} className="hover:underline hover:text-brand-500">
                       Reply
@@ -436,7 +436,7 @@ const PostCard = ({ post }) => {
                   )}
                 </div>
 
-                {/* Nesting Replies */}
+                
                 {replies[comment._id] && replies[comment._id].map((reply) => (
                   <div key={reply._id} className="ml-9 mt-3 flex items-start justify-between bg-slate-50/50 dark:bg-dark-900/30 p-2.5 rounded-xl border border-slate-100 dark:border-dark-700/50">
                     <div className="flex items-start gap-2">
@@ -476,7 +476,7 @@ const PostCard = ({ post }) => {
                   </div>
                 ))}
 
-                {/* Nested Reply Form */}
+                
                 {replyingTo && replyingTo._id === comment._id && (
                   <form
                     onSubmit={(e) => handleAddReply(e, comment._id)}

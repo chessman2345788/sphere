@@ -44,7 +44,7 @@ const notificationSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for fast querying of unread and inbox notifications
+
 notificationSchema.index({ recipient: 1, isRead: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Notification', notificationSchema);

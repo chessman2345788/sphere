@@ -2,20 +2,20 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('../utils/token');
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
+
+
+
 const register = async (req, res, next) => {
   const { name, username, email, password } = req.body;
 
   try {
-    // Check if user already exists
+    
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'Username or email already in use' });
     }
 
-    // Create user
+    
     const user = await User.create({
       name,
       username,
@@ -26,7 +26,7 @@ const register = async (req, res, next) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Save refresh token to database
+    
     user.refreshTokens.push(refreshToken);
     await user.save();
 
@@ -49,9 +49,9 @@ const register = async (req, res, next) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+
+
+
 const login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -60,13 +60,13 @@ const login = async (req, res, next) => {
   }
 
   try {
-    // Find user and include password field
+    
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    // Check password matches
+    
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -75,7 +75,7 @@ const login = async (req, res, next) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Save refresh token to user
+    
     user.refreshTokens.push(refreshToken);
     await user.save();
 
@@ -98,15 +98,15 @@ const login = async (req, res, next) => {
   }
 };
 
-// @desc    Logout user
-// @route   POST /api/auth/logout
-// @access  Private
+
+
+
 const logout = async (req, res, next) => {
   const { refreshToken } = req.body;
 
   try {
     if (refreshToken) {
-      // Remove this refresh token from user document
+      
       await User.updateOne(
         { _id: req.user.id },
         { $pull: { refreshTokens: refreshToken } }
@@ -119,9 +119,9 @@ const logout = async (req, res, next) => {
   }
 };
 
-// @desc    Refresh access token (Token Rotation)
-// @route   POST /api/auth/refresh
-// @access  Public
+
+
+
 const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
 
@@ -130,19 +130,19 @@ const refreshToken = async (req, res, next) => {
   }
 
   try {
-    // Verify refresh token
+    
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'supersecretrefreshjwtkey123!');
 
-    // Find user
+    
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid token user' });
     }
 
-    // Check if refresh token exists in user's list
+    
     const tokenIndex = user.refreshTokens.indexOf(refreshToken);
     if (tokenIndex === -1) {
-      // Potential refresh token reuse attack! Revoke all tokens for safety
+      
       user.refreshTokens = [];
       await user.save();
       return res.status(403).json({
@@ -151,11 +151,11 @@ const refreshToken = async (req, res, next) => {
       });
     }
 
-    // Generate new tokens
+    
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
 
-    // Rotate the refresh token: swap old with new
+    
     user.refreshTokens[tokenIndex] = newRefreshToken;
     await user.save();
 
@@ -170,9 +170,9 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
-// @desc    Get current logged in user
-// @route   GET /api/auth/me
-// @access  Private
+
+
+
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);

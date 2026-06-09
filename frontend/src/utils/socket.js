@@ -13,7 +13,7 @@ let socket = null;
 export const connectSocket = (token) => {
   if (socket) return socket;
 
-  // In production it uses configured URL, in dev it falls back to proxy setup
+  
   socket = io(import.meta.env.VITE_API_URL || window.location.origin, {
     auth: { token: `Bearer ${token}` },
     transports: ['websocket'],
@@ -23,22 +23,22 @@ export const connectSocket = (token) => {
     console.log('🔌 Connected to Socket.IO Server');
   });
 
-  // Listen for online status updates
+  
   socket.on('user_status', (data) => {
     store.dispatch(updateOnlineUsers(data));
   });
 
-  // Listen for new chat messages
+  
   socket.on('new_message', (message) => {
     store.dispatch(receiveNewMessage(message));
   });
 
-  // Listen for messages read receipts
+  
   socket.on('messages_read', (data) => {
     store.dispatch(setMessagesReadLocal(data));
   });
 
-  // Listen for typing events
+  
   socket.on('typing', (data) => {
     store.dispatch(setPartnerTyping({ userId: data.senderId, isTyping: true }));
   });
@@ -47,7 +47,7 @@ export const connectSocket = (token) => {
     store.dispatch(setPartnerTyping({ userId: data.senderId, isTyping: false }));
   });
 
-  // Listen for notifications
+  
   socket.on('new_notification', (notification) => {
     store.dispatch(receiveNotification(notification));
   });

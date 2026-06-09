@@ -16,7 +16,7 @@ import { BarChart3, TrendingUp, ThumbsUp, MessageSquare, Files, Users, Activity 
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -60,7 +60,7 @@ const AnalyticsPage = () => {
     );
   }
 
-  // Activity trends chart data
+  
   const trendLabels = data.activityTrends.map(t => t.label);
   const lineChartData = {
     labels: trendLabels,
@@ -92,7 +92,7 @@ const AnalyticsPage = () => {
     ],
   };
 
-  // Platform engagement bar chart
+  
   const barChartData = {
     labels: trendLabels,
     datasets: [
@@ -152,7 +152,7 @@ const AnalyticsPage = () => {
   return (
     <div className="space-y-6">
       
-      {/* Overview Cards */}
+      
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon;
@@ -170,10 +170,10 @@ const AnalyticsPage = () => {
         })}
       </div>
 
-      {/* Grid: Charts */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Line Chart: Activity Trends */}
+        
         <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm transition-colors">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="h-4.5 w-4.5 text-brand-500" />
@@ -184,7 +184,7 @@ const AnalyticsPage = () => {
           </div>
         </div>
 
-        {/* Bar Chart: Daily Engagement */}
+        
         <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm transition-colors">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-4.5 w-4.5 text-indigo-500" />
@@ -196,7 +196,7 @@ const AnalyticsPage = () => {
         </div>
       </div>
 
-      {/* Top Performing Posts */}
+      
       <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 p-5 shadow-sm transition-colors">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="h-4.5 w-4.5 text-brand-500" />

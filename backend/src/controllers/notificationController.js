@@ -1,8 +1,8 @@
 const Notification = require('../models/Notification');
 
-// @desc    Get user notifications
-// @route   GET /api/notifications
-// @access  Private
+
+
+
 const getNotifications = async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
@@ -23,9 +23,9 @@ const getNotifications = async (req, res, next) => {
   }
 };
 
-// @desc    Get unread notification count
-// @route   GET /api/notifications/unread-count
-// @access  Private
+
+
+
 const getUnreadCount = async (req, res, next) => {
   try {
     const count = await Notification.countDocuments({
@@ -39,9 +39,9 @@ const getUnreadCount = async (req, res, next) => {
   }
 };
 
-// @desc    Mark a single notification as read
-// @route   PUT /api/notifications/:id/read
-// @access  Private
+
+
+
 const markAsRead = async (req, res, next) => {
   try {
     const notification = await Notification.findOne({
@@ -62,9 +62,9 @@ const markAsRead = async (req, res, next) => {
   }
 };
 
-// @desc    Mark all notifications as read
-// @route   PUT /api/notifications/read-all
-// @access  Private
+
+
+
 const markAllAsRead = async (req, res, next) => {
   try {
     await Notification.updateMany(

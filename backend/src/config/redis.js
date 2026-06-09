@@ -68,7 +68,7 @@ const initializeRedis = () => {
   const redisUrl = process.env.REDIS_URL;
 
   if (!redisUrl || redisUrl.includes('localhost') || redisUrl.includes('127.0.0.1')) {
-    // Try to connect to local or cloud Redis, but gracefully catch error
+    
     try {
       redisClient = new Redis(redisUrl || 'redis://127.0.0.1:6379', {
         maxRetriesPerRequest: 1,
@@ -76,14 +76,14 @@ const initializeRedis = () => {
           if (times > 2) {
             console.warn('❌ Redis connection failed. Falling back to mock store.');
             switchToMock();
-            return null; // Stop retrying
+            return null; 
           }
-          return 100; // Retry after 100ms
+          return 100; 
         }
       });
 
       redisClient.on('error', (err) => {
-        // Suppress print to console once we already fell back
+        
         if (!isMock) {
           console.warn('❌ Redis Error: ' + err.message);
           switchToMock();
@@ -94,7 +94,7 @@ const initializeRedis = () => {
         console.log('✅ Redis Client Connected');
       });
 
-      // Same for publisher and subscriber
+      
       publisher = new Redis(redisUrl || 'redis://127.0.0.1:6379', { maxRetriesPerRequest: 1 });
       subscriber = new Redis(redisUrl || 'redis://127.0.0.1:6379', { maxRetriesPerRequest: 1 });
       
@@ -105,7 +105,7 @@ const initializeRedis = () => {
       switchToMock();
     }
   } else {
-    // Attempt connection for non-localhost/Cloud Redis URL
+    
     try {
       redisClient = new Redis(redisUrl);
       publisher = new Redis(redisUrl);
@@ -127,7 +127,7 @@ function switchToMock() {
   redisClient = new MockRedisClient();
   publisher = redisClient;
   subscriber = new MockRedisClient();
-  // Sync subscriber reference
+  
   subscriber.subscribedChannels = new Set();
 }
 

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const analyticsSchema = new mongoose.Schema(
   {
     date: {
-      type: String, // Format: YYYY-MM-DD
+      type: String, 
       required: true,
       unique: true,
       index: true,
@@ -34,7 +34,7 @@ const analyticsSchema = new mongoose.Schema(
     },
     engagementRate: {
       type: Number,
-      default: 0, // Calculated as: ((likes + comments + shares) / activeUsers) * 100
+      default: 0, 
     },
     topPosts: [
       {

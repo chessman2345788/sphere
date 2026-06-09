@@ -29,12 +29,12 @@ const ChatPage = () => {
   const fileInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
-  // Load chats on mount
+  
   useEffect(() => {
     dispatch(fetchChatsList());
   }, [dispatch]);
 
-  // Load message history when active partner changes
+  
   useEffect(() => {
     if (activeChatPartner) {
       dispatch(fetchMessageHistory({ userId: activeChatPartner._id, page: 1 }));
@@ -42,12 +42,12 @@ const ChatPage = () => {
     }
   }, [activeChatPartner, dispatch]);
 
-  // Scroll to bottom of message thread
+  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typingUsers]);
 
-  // Handle typing event emissions
+  
   const handleInputChange = (e) => {
     setMessageText(e.target.value);
     
@@ -60,7 +60,7 @@ const ChatPage = () => {
       socket.emit('typing', { receiverId: activeChatPartner._id });
     }
 
-    // Debounce stop typing event
+    
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     
     typingTimeoutRef.current = setTimeout(() => {
@@ -69,7 +69,7 @@ const ChatPage = () => {
     }, 2000);
   };
 
-  // Process attachments
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -97,7 +97,7 @@ const ChatPage = () => {
     e.preventDefault();
     if (!messageText.trim() && !selectedFile) return;
 
-    // Build form data
+    
     const formData = new FormData();
     formData.append('receiverId', activeChatPartner._id);
     formData.append('content', messageText);
@@ -108,7 +108,7 @@ const ChatPage = () => {
     setMessageText('');
     clearFile();
 
-    // Reset typing status locally and on socket
+    
     if (isTyping) {
       setIsTyping(false);
       const socket = getSocket();
@@ -122,18 +122,18 @@ const ChatPage = () => {
     }
   };
 
-  // Check if a partner is online
+  
   const isOnline = (partnerId) => {
     return onlineUsers.includes(partnerId);
   };
 
-  // Check if active partner is typing
+  
   const partnerIsTyping = activeChatPartner && typingUsers.includes(activeChatPartner._id);
 
   return (
     <div className="bg-white dark:bg-dark-800 rounded-3xl border border-slate-100 dark:border-dark-700 shadow-sm h-[80vh] flex overflow-hidden transition-colors">
       
-      {/* Left Pane: Conversations list */}
+      
       <div className={`w-full md:w-80 border-r border-slate-100 dark:border-dark-700 h-full flex flex-col ${activeChatPartner ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-slate-50 dark:border-dark-700/50">
           <h2 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-wider">Conversations</h2>
@@ -151,7 +151,7 @@ const ChatPage = () => {
                   activeChatPartner?._id === chat.partner._id ? 'bg-brand-50/20 dark:bg-brand-900/10 border-l-4 border-brand-500' : ''
                 }`}
               >
-                {/* Avatar with status bubble */}
+                
                 <div className="relative">
                   <img src={chat.partner.avatar} alt="" className="h-10 w-10 rounded-xl object-cover" />
                   {isOnline(chat.partner._id) && (
@@ -159,7 +159,7 @@ const ChatPage = () => {
                   )}
                 </div>
                 
-                {/* Thread snippet */}
+                
                 <div className="flex-grow min-w-0">
                   <div className="flex justify-between items-baseline mb-0.5">
                     <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">{chat.partner.name}</h4>
@@ -174,7 +174,7 @@ const ChatPage = () => {
                   </p>
                 </div>
 
-                {/* Unread count badge */}
+                
                 {chat.unreadCount > 0 && (
                   <span className="flex items-center justify-center bg-red-500 text-white font-bold text-[9px] h-4.5 min-w-4.5 px-1 rounded-full">
                     {chat.unreadCount}
@@ -186,11 +186,11 @@ const ChatPage = () => {
         </div>
       </div>
 
-      {/* Right Pane: Message Area */}
+      
       <div className={`flex-1 flex flex-col h-full bg-slate-50/40 dark:bg-dark-900/25 ${activeChatPartner ? 'flex' : 'hidden md:flex'}`}>
         {activeChatPartner ? (
           <>
-            {/* Header info */}
+            
             <div className="h-16 px-4 md:px-6 border-b border-slate-100 dark:border-dark-700 flex items-center justify-between bg-white dark:bg-dark-800 transition-colors">
               <div className="flex items-center gap-3">
                 <button
@@ -214,7 +214,7 @@ const ChatPage = () => {
               </div>
             </div>
 
-            {/* Messages Feed */}
+            
             <div className="flex-grow overflow-y-auto p-6 space-y-4">
               {messages.map((msg) => {
                 const isSentByMe = (msg.sender._id || msg.sender) === currentUser.id;
@@ -236,7 +236,7 @@ const ChatPage = () => {
                         }`}>
                           {msg.content && <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>}
                           
-                          {/* Chat Media */}
+                          
                           {msg.media?.url && (
                             <div className="mt-2 rounded-xl overflow-hidden max-w-sm">
                               {msg.media.type === 'video' ? (
@@ -264,7 +264,7 @@ const ChatPage = () => {
                 );
               })}
 
-              {/* Typing bubble */}
+              
               {partnerIsTyping && (
                 <div className="flex justify-start">
                   <div className="flex gap-2.5 max-w-[70%] items-end">
@@ -284,7 +284,7 @@ const ChatPage = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Media Upload Previews */}
+            
             {filePreview && (
               <div className="px-6 py-2.5 bg-white dark:bg-dark-800 border-t border-slate-50 dark:border-dark-700/50 flex items-center justify-between">
                 <div className="relative rounded-lg overflow-hidden h-14 w-20 border border-slate-100 dark:border-dark-700 bg-slate-50 dark:bg-dark-900">
@@ -303,7 +303,7 @@ const ChatPage = () => {
               </div>
             )}
 
-            {/* Input message form */}
+            
             <form onSubmit={handleSendMessage} className="p-4 bg-white dark:bg-dark-800 border-t border-slate-100 dark:border-dark-700 flex gap-3 transition-colors">
               <input
                 type="file"

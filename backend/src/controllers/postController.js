@@ -6,16 +6,16 @@ const { uploadMedia } = require('../config/cloudinary');
 const { sendRealtimeNotification } = require('../config/socket');
 const { redisClient } = require('../config/redis');
 
-// @desc    Create a new post
-// @route   POST /api/posts
-// @access  Private
+
+
+
 const createPost = async (req, res, next) => {
   const { content } = req.body;
 
   try {
     let mediaData = { url: '', type: '' };
 
-    // Upload media file if present
+    
     if (req.file) {
       const resourceType = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
       const folder = resourceType === 'video' ? 'socialsphere/videos' : 'socialsphere/posts';
@@ -51,23 +51,23 @@ const createPost = async (req, res, next) => {
   }
 };
 
-// @desc    Get social feed (with infinite scrolling)
-// @route   GET /api/posts/feed
-// @access  Private
+
+
+
 const getFeed = async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
   const skip = (page - 1) * limit;
 
   try {
-    // Get list of users the current user is following
+    
     const followingUsers = await Follower.find({ follower: req.user.id }).select('following');
     const followingIds = followingUsers.map(f => f.following);
     
-    // Include current user's posts in the feed
+    
     followingIds.push(req.user.id);
 
-    // Query posts
+    
     const posts = await Post.find({ author: { $in: followingIds } })
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -93,9 +93,9 @@ const getFeed = async (req, res, next) => {
   }
 };
 
-// @desc    Get single post details
-// @route   GET /api/posts/:id
-// @access  Private
+
+
+
 const getPostById = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
@@ -116,9 +116,9 @@ const getPostById = async (req, res, next) => {
   }
 };
 
-// @desc    Update post
-// @route   PUT /api/posts/:id
-// @access  Private
+
+
+
 const updatePost = async (req, res, next) => {
   try {
     let post = await Post.findById(req.params.id);
@@ -127,7 +127,7 @@ const updatePost = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    // Ensure user is the post author or admin
+    
     if (post.author.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized to update this post' });
     }
@@ -149,9 +149,9 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-// @desc    Delete post
-// @route   DELETE /api/posts/:id
-// @access  Private
+
+
+
 const deletePost = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -160,19 +160,19 @@ const deletePost = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    // Ensure user is post author or admin
+    
     if (post.author.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized to delete this post' });
     }
 
-    // Remove the post document
+    
     await Post.findByIdAndDelete(req.params.id);
 
-    // Delete any comments associated with the post
+    
     const Comment = require('../models/Comment');
     await Comment.deleteMany({ post: req.params.id });
 
-    // Clean up notifications referencing this post
+    
     await Notification.deleteMany({ post: req.params.id });
 
     res.status(200).json({ success: true, message: 'Post and associated comments removed successfully' });
@@ -181,9 +181,9 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-// @desc    Like / Unlike post
-// @route   POST /api/posts/:id/like
-// @access  Private
+
+
+
 const likePost = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -196,10 +196,10 @@ const likePost = async (req, res, next) => {
     let message = '';
 
     if (isLiked) {
-      // Unlike
+      
       post.likes = post.likes.filter((id) => id.toString() !== req.user.id);
       message = 'Post unliked';
-      // Delete notification
+      
       await Notification.findOneAndDelete({
         recipient: post.author,
         sender: req.user.id,
@@ -207,11 +207,11 @@ const likePost = async (req, res, next) => {
         post: post._id,
       });
     } else {
-      // Like
+      
       post.likes.push(req.user.id);
       message = 'Post liked';
 
-      // Create notification if liking someone else's post
+      
       if (post.author.toString() !== req.user.id) {
         const notification = await Notification.create({
           recipient: post.author,
@@ -242,9 +242,9 @@ const likePost = async (req, res, next) => {
   }
 };
 
-// @desc    Share / Repost a post
-// @route   POST /api/posts/:id/share
-// @access  Private
+
+
+
 const repost = async (req, res, next) => {
   try {
     const originalPost = await Post.findById(req.params.id);
@@ -253,18 +253,18 @@ const repost = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Original post not found' });
     }
 
-    // Create the repost post
+    
     const repostPost = await Post.create({
       author: req.user.id,
       originalPost: originalPost._id,
-      content: req.body.content || '', // Optional comment on share
+      content: req.body.content || '', 
     });
 
-    // Increment original post's shares
+    
     originalPost.sharesCount += 1;
     await originalPost.save();
 
-    // Create notification for original post author
+    
     if (originalPost.author.toString() !== req.user.id) {
       const notification = await Notification.create({
         recipient: originalPost.author,
@@ -299,9 +299,9 @@ const repost = async (req, res, next) => {
   }
 };
 
-// @desc    Bookmark / Save a post
-// @route   POST /api/posts/:id/bookmark
-// @access  Private
+
+
+
 const bookmarkPost = async (req, res, next) => {
   try {
     const postId = req.params.id;
@@ -316,11 +316,11 @@ const bookmarkPost = async (req, res, next) => {
 
     let message = '';
     if (isBookmarked) {
-      // Remove bookmark
+      
       user.savedPosts = user.savedPosts.filter(id => id.toString() !== postId);
       message = 'Post removed from bookmarks';
     } else {
-      // Add bookmark
+      
       if (!user.savedPosts) user.savedPosts = [];
       user.savedPosts.push(postId);
       message = 'Post saved to bookmarks';
@@ -338,9 +338,9 @@ const bookmarkPost = async (req, res, next) => {
   }
 };
 
-// @desc    Get bookmarked posts for current user
-// @route   GET /api/posts/bookmarks
-// @access  Private
+
+
+
 const getBookmarkedPosts = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
@@ -359,9 +359,9 @@ const getBookmarkedPosts = async (req, res, next) => {
   }
 };
 
-// @desc    Search posts by hashtag or keyword
-// @route   GET /api/posts/search
-// @access  Private
+
+
+
 const searchPosts = async (req, res, next) => {
   const { q, hashtag } = req.query;
   let queryObj = {};
@@ -390,14 +390,14 @@ const searchPosts = async (req, res, next) => {
   }
 };
 
-// @desc    Get trending posts (using Redis caching)
-// @route   GET /api/posts/trending
-// @access  Private
+
+
+
 const getTrendingPosts = async (req, res, next) => {
   const cacheKey = 'trending_posts';
 
   try {
-    // 1. Try reading from Redis cache
+    
     const cachedTrending = await redisClient.get(cacheKey);
     if (cachedTrending) {
       return res.status(200).json({
@@ -407,7 +407,7 @@ const getTrendingPosts = async (req, res, next) => {
       });
     }
 
-    // 2. Cache miss: query database for top liked/shared posts in past 7 days
+    
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -417,17 +417,17 @@ const getTrendingPosts = async (req, res, next) => {
       .populate('author', 'name username avatar')
       .exec();
 
-    // Sort in memory based on popularity: likes.length + commentsCount + sharesCount
+    
     const trendingPosts = posts
       .map(post => {
         const engagement = post.likes.length + (post.commentsCount || 0) + (post.sharesCount || 0);
         return { post, engagement };
       })
       .sort((a, b) => b.engagement - a.engagement)
-      .slice(0, 5) // Limit to top 5
+      .slice(0, 5) 
       .map(item => item.post);
 
-    // 3. Write to Redis cache with 5 minute expiration
+    
     await redisClient.set(cacheKey, JSON.stringify(trendingPosts), 'EX', 300);
 
     res.status(200).json({
@@ -440,9 +440,9 @@ const getTrendingPosts = async (req, res, next) => {
   }
 };
 
-// @desc    Get all posts by a specific user
-// @route   GET /api/posts/user/:username
-// @access  Private
+
+
+
 const getUserPosts = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.params.username.toLowerCase() });
